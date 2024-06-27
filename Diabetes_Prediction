@@ -1,0 +1,58 @@
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn import svm
+from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import StandardScaler
+#Data Collection and analysis
+
+
+
+df=pd.read_csv('/content/diabetes.csv')
+df.head()
+df.shape
+
+df.describe()
+df['Outcome'].value_counts()
+# 0-> Non-diabetic
+# 1-> Diabetic
+ df.groupby('Outcome').mean()
+X=df.drop(columns='Outcome',axis=1)
+Y=df['Outcome']
+print(X)
+print(Y)
+# Data Standardization
+scaler=StandardScaler()
+standard_data=scaler.fit_transform(X)
+print(standard_data)
+# Test & Train Split
+
+X_train,X_test,Y_train,Y_test=train_test_split(X,Y,test_size=0.2,stratify=Y,random_state=2)
+print(X.shape,X_train.shape,X_test.shape)
+# Training the model
+classifier=svm.SVC(kernel='linear')
+classifier.fit(X_train,Y_train)
+# Model Evaluation
+accuracy
+x_test_prediction=classifier.predict(X_test)
+x_test_score=accuracy_score(x_test_prediction,Y_test)
+print('accuracy of test data:', x_test_score)
+#accuracy on train data
+x_train_prediction=classifier.predict(X_train)
+x_train_score=accuracy_score(x_train_prediction,Y_train)
+print('accuracy score of train data:',x_train_score)
+#Making a predictive system
+input_data = (5,166,72,19,175,25.8,0.587,51)
+
+data_array=np.asarray(input_data)
+
+data_reshaped=data_array.reshape(1,-1)
+
+std_data=scaler.transform(data_reshaped)
+print(std_data)
+
+prediction=classifier.predict(std_data)
+print(prediction)
+
+if(prediction[0]==0): print('Non-diabetic')
+else : print('DIABETIC')
